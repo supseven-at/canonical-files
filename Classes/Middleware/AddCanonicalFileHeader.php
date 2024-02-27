@@ -41,9 +41,11 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
      * Inject ResourceFactory
      *
      * @param \TYPO3\CMS\Core\Resource\ResourceFactory $resourceFactory
+     * @param \Supseven\CanonicalFiles\Utility\CanonicalUri $canonicalUri
      */
     public function __construct(
-        private ResourceFactory $resourceFactory
+        private ResourceFactory $resourceFactory,
+        private CanonicalUri $canonicalUri
     ) {
     }
 
@@ -77,10 +79,10 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
             // the canonical link header if the file's location is not located in the current site's storage.
             // But it's okay to add the canonical link header in any case, so we save pains and just add the header.
             // Get the site identifier from the file's storage configuration, if available:
-            $canonisedFileUrl = CanonicalUri::getFileUri($file);
+            $canonisedFileUrl = $this->canonicalUri->getFileUri($file);
 
             // As we force the file through TYPO3's index.php, we have to handle file headers manually
-            $response = CanonicalUri::buildResponseForFile($requestedFile);
+            $response = $this->canonicalUri->buildResponseForFile($requestedFile);
 
             // Set the canonised header
             return $response->withHeader('Link', '<' . $canonisedFileUrl . '>; rel="canonical"');

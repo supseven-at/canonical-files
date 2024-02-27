@@ -47,7 +47,7 @@ class CanonicalUri
      * @param \TYPO3\CMS\Core\Resource\FileInterface $file
      * @return string
      */
-    public static function getFileUri(FileInterface $file): string
+    public function getFileUri(FileInterface $file): string
     {
         $fileUrl = $file->getPublicUrl();
         $fileStorage = $file->getStorage()->getStorageRecord();
@@ -55,7 +55,7 @@ class CanonicalUri
         // If configuration is available and set, create and use the canonical url...
         if (!empty($fileStorage['tx_canonical_files_site_identifier'])) {
 
-            return self::getBaseFromSiteIdentifier($fileStorage['tx_canonical_files_site_identifier']) . $fileUrl;
+            return $this->getBaseFromSiteIdentifier($fileStorage['tx_canonical_files_site_identifier']) . $fileUrl;
         }
 
         // ...otherwise use the current base URL
@@ -71,7 +71,7 @@ class CanonicalUri
      * @param string $siteIdentifier
      * @return string
      */
-    public static function getBaseFromSiteIdentifier(string $siteIdentifier): string
+    public function getBaseFromSiteIdentifier(string $siteIdentifier): string
     {
         if (isset(self::$baseUriCache[$siteIdentifier])) {
             return self::$baseUriCache[$siteIdentifier];
@@ -103,11 +103,10 @@ class CanonicalUri
      * @param string $filePath
      * @return \TYPO3\CMS\Core\Http\Response
      */
-    public static function buildResponseForFile(string $filePath): Response
+    public function buildResponseForFile(string $filePath): Response
     {
         $mimeType = new MimeTypes();
         $mimeType = $mimeType->guessMimeType($filePath);
-
         $response = new Response();
 
         return $response
