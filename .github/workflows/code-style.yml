@@ -6,14 +6,14 @@ on: [ push, pull_request ]
 jobs:
   code-style:
     name: Code Style Check
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
-        uses: nanasess/setup-php@v3
+        uses: nanasess/setup-php@v4
         with:
           php-version: 8.2
 
