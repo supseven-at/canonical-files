@@ -1,0 +1,29 @@
+{
+	"name": "supseven/canonical-files",
+	"type": "typo3-cms-extension",
+	"description": "Extension to add canonical url headers to files",
+    "license": "GPL-3.0-only",
+    "require": {
+        "typo3/cms-backend": "^11.5",
+        "typo3/cms-core": "^11.5"
+    },
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "canonical-files"
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"Supseven\\CanonicalFiles\\": "Classes"
+		}
+	},
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.14.1"
+    },
+	"config": {
+		"allow-plugins": {
+			"typo3/class-alias-loader": false,
+			"typo3/cms-composer-installers": false
+		}
+	}
+}

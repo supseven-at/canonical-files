@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns:t3="http://typo3.org/schemas/xliff" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" original="" datatype="plaintext" date="2024-02-21T09:14:21+01:00">
+        <body>
+            <trans-unit id="sys_file_storage.tab-title" resname="sys_file_storage.tab-title">
+                <source>Canonical Files</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.tx_canonical_files_description" resname="sys_file_storage.tx_canonical_files_description">
+                <source>If a site is selected, all files within this storage will be delivered with an absolute URL set to this site.</source>
+            </trans-unit>
+            <trans-unit id="sys_file_storage.tx_canonical_files_site" resname="sys_file_storage.tx_canonical_files_site">
+                <source>Site</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
