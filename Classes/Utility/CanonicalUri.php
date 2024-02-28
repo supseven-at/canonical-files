@@ -50,6 +50,7 @@ class CanonicalUri
     public function getFileUri(FileInterface $file): string
     {
         $fileUrl = $file->getPublicUrl();
+        $fileUrl = str_starts_with($fileUrl, '/') ? $fileUrl : '/' . $fileUrl;
         $fileStorage = $file->getStorage()->getStorageRecord();
 
         // If configuration is available and set, create and use the canonical url...
