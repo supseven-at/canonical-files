@@ -5,8 +5,8 @@
     "license": "GPL-3.0-only",
     "require": {
         "php": "^8.2",
-        "typo3/cms-backend": "^11.5",
-        "typo3/cms-core": "^11.5"
+        "typo3/cms-backend": "^12.4",
+        "typo3/cms-core": "^12.4"
     },
 	"extra": {
 		"typo3/cms": {
@@ -20,8 +20,8 @@
 	},
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.14.1",
-        "phpunit/phpunit": "^9",
-		"typo3/testing-framework": "^7.0"
+        "phpunit/phpunit": "^10.5",
+		"typo3/testing-framework": "^8.0"
     },
 	"config": {
 		"allow-plugins": {

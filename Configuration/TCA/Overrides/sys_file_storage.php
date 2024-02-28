@@ -26,15 +26,18 @@ call_user_func(
         // Access all site configurations and add them to the select field
         $site = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
         // Add empty item
-        $additionalColumns['tx_canonical_files_site_identifier']['config']['items'][] = ['', ''];
+        $additionalColumns['tx_canonical_files_site_identifier']['config']['items'][] = [
+            'label' => '',
+            'value' => '',
+        ];
         // Add all site configs
         foreach ($site->getAllSites() as $siteItem) {
             $additionalColumns['tx_canonical_files_site_identifier']['config']['items'][] = [
                 // Website title
-                $siteItem->getConfiguration()['websiteTitle'],
+                'label' => $siteItem->getConfiguration()['websiteTitle'],
                 // For the value of the select option we take the site identifier instead of the actual domain,
                 // so this feature is also working for different environments
-                $siteItem->getIdentifier(),
+                'value' => $siteItem->getIdentifier(),
             ];
         }
 

@@ -18,6 +18,8 @@ declare(strict_types=1);
 namespace Supseven\CanonicalFiles\Tests\Unit\Middleware;
 
 use JetBrains\PhpStorm\NoReturn;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -30,12 +32,13 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class AddCanonicalFileHeaderTest extends UnitTestCase
+#[CoversClass(AddCanonicalFileHeader::class)]
+final class AddCanonicalFileHeaderTest extends UnitTestCase
 {
     /**
-     * @test
-     * @throws \TYPO3\CMS\Core\Exception
+     * @throws \TYPO3\CMS\Core\Exception|\PHPUnit\Framework\MockObject\Exception
      */
+    #[Test]
     #[NoReturn] public function process(): void
     {
         $context = 'Production/Test';
