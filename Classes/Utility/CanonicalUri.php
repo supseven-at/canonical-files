@@ -83,10 +83,12 @@ class CanonicalUri
         $baseFromSiteIdentifier = '';
 
         // First check base variants and use it if applicable
-        if (isset($siteConfiguration['baseVariants'])) {
-            foreach ($siteConfiguration['baseVariants'] as $base) {
-                if (str_contains($base['condition'], Environment::toArray()['context'])) {
-                    $baseFromSiteIdentifier = $base['base'];
+        if ((string)Environment::getContext() !== 'Production/Live') {
+            if (isset($siteConfiguration['baseVariants'])) {
+                foreach ($siteConfiguration['baseVariants'] as $base) {
+                    if (str_contains($base['condition'], Environment::toArray()['context'])) {
+                        $baseFromSiteIdentifier = $base['base'];
+                    }
                 }
             }
         }
