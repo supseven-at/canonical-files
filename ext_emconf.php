@@ -11,10 +11,9 @@ $EM_CONF[$_EXTKEY] = [
     'author_company'   => 'supseven',
     'state'            => 'stable',
     'clearCacheOnLoad' => true,
-    'version'          => '1.0.0',
     'constraints'      => [
         'depends' => [
-            'typo3' => '11.5.1-11.5.99',
+            'typo3' => '12.4.1-12.4.99',
         ],
     ],
 ];

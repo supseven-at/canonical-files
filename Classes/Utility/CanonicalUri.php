@@ -17,8 +17,9 @@ declare(strict_types=1);
 
 namespace Supseven\CanonicalFiles\Utility;
 
+use Symfony\Component\ExpressionLanguage\SyntaxError;
 use Symfony\Component\Mime\MimeTypes;
-use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -36,6 +37,12 @@ class CanonicalUri
      * @var array
      */
     protected static array $baseUriCache = [];
+
+    public function __construct(
+        protected readonly SiteFinder $siteFinder,
+        protected readonly Resolver $expressionLanguageResolver
+    ) {
+    }
 
     /**
      * Try to get the setting "tx_canonical_files_site_identifier" from the file storage record and create the
@@ -78,17 +85,19 @@ class CanonicalUri
             return self::$baseUriCache[$siteIdentifier];
         }
 
-        $site = GeneralUtility::makeInstance(SiteFinder::class);
-        $siteConfiguration = $site->getAllSites()[$siteIdentifier]->getConfiguration();
+        $siteConfiguration = $this->siteFinder->getAllSites()[$siteIdentifier]->getConfiguration();
         $baseFromSiteIdentifier = '';
 
-        // First check base variants and use it if applicable
-        if ((string)Environment::getContext() !== 'Production/Live') {
-            if (isset($siteConfiguration['baseVariants'])) {
-                foreach ($siteConfiguration['baseVariants'] as $base) {
-                    if (str_contains($base['condition'], Environment::toArray()['context'])) {
-                        $baseFromSiteIdentifier = $base['base'];
+        if (isset($siteConfiguration['baseVariants'])) {
+            // Iterate over available base variants and evaluate their conditions
+            foreach ($siteConfiguration['baseVariants'] as $baseVariant) {
+                try {
+                    if ($this->expressionLanguageResolver->evaluate($baseVariant['condition'])) {
+                        $baseFromSiteIdentifier = $baseVariant['base'];
+                        break;
                     }
+                } catch (SyntaxError $e) {
+                    // Ignore not applicable conditions and fail silently
                 }
             }
         }
@@ -98,7 +107,7 @@ class CanonicalUri
             $baseFromSiteIdentifier = $siteConfiguration['base'];
         }
 
-        // Cache the result
+        // Cache and return the result
         return self::$baseUriCache[$siteIdentifier] = rtrim($baseFromSiteIdentifier, '/');
     }
 

@@ -6,3 +6,8 @@ services:
 
   Supseven\CanonicalFiles\:
     resource: '../Classes/*'
+
+  TYPO3\CMS\Core\ExpressionLanguage\Resolver:
+    arguments:
+      $context: 'site'
+      $variables: []
