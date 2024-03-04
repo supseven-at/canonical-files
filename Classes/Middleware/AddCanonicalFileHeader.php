@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Resource\ResourceFactory;
  * RewriteCond %{REQUEST_FILENAME} \.(pdf|doc|docx|xls|xlsx|ppt|pptx)$
  * RewriteRule ^.*$ %{ENV:CWD}index.php [QSA,L]
  */
-readonly class AddCanonicalFileHeader implements MiddlewareInterface
+class AddCanonicalFileHeader implements MiddlewareInterface
 {
     /**
      * Inject ResourceFactory
@@ -44,8 +44,8 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
      * @param \Supseven\CanonicalFiles\Utility\CanonicalUri $canonicalUri
      */
     public function __construct(
-        private ResourceFactory $resourceFactory,
-        private CanonicalUri $canonicalUri
+        private readonly ResourceFactory $resourceFactory,
+        private readonly CanonicalUri $canonicalUri
     ) {
     }
 
