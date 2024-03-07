@@ -65,7 +65,7 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
 
         // Check if file exists
         // If not we handle this as a common page request
-        if (file_exists($requestedFile) && is_file($requestedFile)) {
+        if (!str_contains($uri, 'index.php') && file_exists($requestedFile) && is_file($requestedFile)) {
 
             // Retrieve FAL from file path to get information about the file's storage
             $file = $this->resourceFactory->retrieveFileOrFolderObject($uri);
