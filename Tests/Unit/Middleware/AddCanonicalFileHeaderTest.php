@@ -24,7 +24,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Supseven\CanonicalFiles\Middleware\AddCanonicalFileHeader;
-use Supseven\CanonicalFiles\Utility\CanonicalUri;
+use Supseven\CanonicalFiles\Service\CanonicalService;
 use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\Response;
@@ -67,17 +67,16 @@ final class AddCanonicalFileHeaderTest extends UnitTestCase
         $fileResource = $this->createMock(FileInterface::class);
         $resourceFactory->expects($this->once())->method('retrieveFileOrFolderObject')->with($filePath)->willReturn($fileResource);
 
-        $canonicalUri = $this->createMock(CanonicalUri::class);
-        $canonicalUri->expects($this->once())->method('getFileUri')->with($fileResource)->willReturn('http://localhost/' . $filePath);
+        $canonicalService = $this->createMock(CanonicalService::class);
+        $canonicalService->expects($this->once())->method('getFileUri')->with($fileResource)->willReturn('http://localhost/' . $filePath);
 
         $serverResponse = $this->createMock(Response::class);
-        $canonicalUri->expects($this->once())->method('buildResponseForFile')->willReturn($serverResponse);
-        $canonicalUri->expects($this->once())->method('buildResponseForFile')->with(Environment::getPublicPath() . $filePath)->willReturn($serverResponse);
+        $canonicalService->expects($this->once())->method('buildResponseForFile')->with(Environment::getPublicPath() . $filePath)->willReturn($serverResponse);
         $serverResponse->expects($this->once())->method('withHeader')->with('Link', '<http://localhost/' . $filePath . '>; rel="canonical"')->willReturn($serverResponse);
 
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
 
-        $subject = new AddCanonicalFileHeader($resourceFactory, $canonicalUri);
+        $subject = new AddCanonicalFileHeader($resourceFactory, $canonicalService);
         $subject->process($serverRequest, $requestHandler);
     }
 }

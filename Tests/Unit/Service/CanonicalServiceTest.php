@@ -15,12 +15,12 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Supseven\CanonicalFiles\Tests\Unit\Utility;
+namespace Supseven\CanonicalFiles\Tests\Unit\Service;
 
 use JetBrains\PhpStorm\NoReturn;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Supseven\CanonicalFiles\Utility\CanonicalUri;
+use Supseven\CanonicalFiles\Service\CanonicalService;
 use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
@@ -30,8 +30,8 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-#[CoversClass(CanonicalUri::class)]
-final class CanonicalUriTest extends UnitTestCase
+#[CoversClass(CanonicalService::class)]
+final class CanonicalServiceTest extends UnitTestCase
 {
     /**
      * @throws \TYPO3\CMS\Core\Exception|\PHPUnit\Framework\MockObject\Exception
@@ -78,7 +78,7 @@ final class CanonicalUriTest extends UnitTestCase
         $expressionLanguageResolver = $this->createMock(Resolver::class);
         $expressionLanguageResolver->expects($this->once())->method('evaluate')->willReturn(true);
 
-        $canonicalUri = new CanonicalUri($siteFinder, $expressionLanguageResolver);
-        $this->assertSame($testDomain . $filePath, $canonicalUri->getFileUri($file));
+        $canonicalService = new CanonicalService($siteFinder, $expressionLanguageResolver);
+        $this->assertSame($testDomain . $filePath, $canonicalService->getFileUri($file));
     }
 }

@@ -21,7 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Supseven\CanonicalFiles\Utility\CanonicalUri;
+use Supseven\CanonicalFiles\Service\CanonicalService;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 
@@ -41,11 +41,11 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
      * Inject ResourceFactory
      *
      * @param \TYPO3\CMS\Core\Resource\ResourceFactory $resourceFactory
-     * @param \Supseven\CanonicalFiles\Utility\CanonicalUri $canonicalUri
+     * @param \Supseven\CanonicalFiles\Service\CanonicalService $canonicalService
      */
     public function __construct(
         private ResourceFactory $resourceFactory,
-        private CanonicalUri $canonicalUri
+        private CanonicalService $canonicalService
     ) {
     }
 
@@ -79,10 +79,10 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
             // the canonical link header if the file's location is not located in the current site's storage.
             // But it's okay to add the canonical link header in any case, so we save pains and just add the header.
             // Get the site identifier from the file's storage configuration, if available:
-            $canonisedFileUrl = $this->canonicalUri->getFileUri($file);
+            $canonisedFileUrl = $this->canonicalService->getFileUri($file);
 
             // As we force the file through TYPO3's index.php, we have to handle file headers manually
-            $response = $this->canonicalUri->buildResponseForFile($requestedFile);
+            $response = $this->canonicalService->buildResponseForFile($requestedFile);
 
             // Set the canonised header
             return $response->withHeader('Link', '<' . $canonisedFileUrl . '>; rel="canonical"');

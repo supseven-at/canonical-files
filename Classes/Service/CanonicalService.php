@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Supseven\CanonicalFiles\Utility;
+namespace Supseven\CanonicalFiles\Service;
 
 use Symfony\Component\ExpressionLanguage\SyntaxError;
 use Symfony\Component\Mime\MimeTypes;
@@ -29,7 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class to create a canonical file uri
  */
-class CanonicalUri
+class CanonicalService
 {
     /**
      * Simple runtime cache for base URI
