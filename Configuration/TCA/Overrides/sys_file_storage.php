@@ -30,8 +30,12 @@ call_user_func(
         // Add all site configs
         foreach ($site->getAllSites() as $siteItem) {
             $additionalColumns['tx_canonical_files_site_identifier']['config']['items'][] = [
-                // Website title
-                $siteItem->getConfiguration()['websiteTitle'],
+                // Website title and identifier (in case of multiple sites with the same title)
+                (
+                !empty($siteItem->getConfiguration()['websiteTitle']) ?
+                    $siteItem->getConfiguration()['websiteTitle'] . ' - ' :
+                    ''
+                ) . ucfirst($siteItem->getIdentifier()),
                 // For the value of the select option we take the site identifier instead of the actual domain,
                 // so this feature is also working for different environments
                 $siteItem->getIdentifier(),
