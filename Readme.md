@@ -1,15 +1,15 @@
 # Canonical URL header for files
 
 This TYPO3 extension adds canonical url headers to files (images, PDFs...),
-depending on the file storage the files are located in. Storages can be 
+depending on the file storage the files are located in. Storages can be
 linked to specific sites (respectively site configurations), so all files
-located in that storage are delivered with an additional canonical header 
+located in that storage are delivered with an additional canonical header
 pointing to the domain of the according site.
 
 Let's say a TYPO3 instance serves two domains, [example.at](https://example.at)
-and [example.de](https://example.de), wich have two file storages defined 
-respectively, `storage-at` and `storage-de`. Then a file provided for 
-download on domain [example.at](https://example.at) but physically located in 
+and [example.de](https://example.de), wich have two file storages defined
+respectively, `storage-at` and `storage-de`. Then a file provided for
+download on domain [example.at](https://example.at) but physically located in
 `storage-de` will be delivered with the canonical header
 `https://example.de/fileadmin/....`
 
@@ -31,14 +31,25 @@ and set the field `Site` in the tab `Canonical Files` accordingly. All files
 stored within such a file storage will get the base, respectively base
 variant, of this site configuration as canonical header.
 
-To make this happen, files have to be routed through TYPO3: Add the 
-following lines to your project's .htaccess file (amend 
+To make this happen, files have to be routed through TYPO3: Add the
+following lines to your project's .htaccess file (amend
 accordingly):
 
 ```
 RewriteCond %{REQUEST_URI} ^/fileadmin
 RewriteCond %{REQUEST_FILENAME} \.(pdf|doc|docx|xls|xlsx|ppt|pptx)$
 RewriteRule ^.*$ %{ENV:CWD}index.php [QSA,L]
+```
+
+### Optional
+
+It makes sense to prevent editors to upload files directly from file reference
+fields within backend forms. Add this to your TSconfig to apply it globally:
+```
+setup.override {
+    edit_docModuleUpload = 0
+}
+setup.fields.edit_docModuleUpload.disabled = 1
 ```
 
 ## Legal
