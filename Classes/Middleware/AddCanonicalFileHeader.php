@@ -61,16 +61,21 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
     {
         // Get absolute file path (on file system) from request
         $uri = urldecode($request->getUri()->getPath());
-        $requestedFile = Environment::getPublicPath() . $uri;
+
+        // Early return for explicit calls to index.php
+        if (str_contains($uri, 'index.php')) {
+            return $handler->handle($request);
+        }
 
         // Check if file exists
         // If not we handle this as a common page request
-        if (!str_contains($uri, 'index.php') && file_exists($requestedFile) && is_file($requestedFile)) {
+        $requestedFile = Environment::getPublicPath() . $uri;
 
+        if (is_file($requestedFile)) {
             // Retrieve FAL from file path to get information about the file's storage
             $file = $this->resourceFactory->retrieveFileOrFolderObject($uri);
 
-            // Just in case...
+            // Early return if FAL can not be built
             if (!$file) {
                 return $handler->handle($request);
             }
@@ -81,14 +86,13 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
             // Get the site identifier from the file's storage configuration, if available:
             $canonisedFileUrl = $this->canonicalService->getFileUri($file);
 
-            // As we force the file through TYPO3's index.php, we have to handle file headers manually
+            // Build file headers manually
             $response = $this->canonicalService->buildResponseForFile($requestedFile);
 
             // Set the canonised header
             return $response->withHeader('Link', '<' . $canonisedFileUrl . '>; rel="canonical"');
         }
 
-        // Not a file request, so we handle this as a common page request
         return $handler->handle($request);
     }
 }
