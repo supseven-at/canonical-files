@@ -34,7 +34,7 @@ call_user_func(
         foreach ($site->getAllSites() as $siteItem) {
             $additionalColumns['tx_canonical_files_site_identifier']['config']['items'][] = [
                 // Website title and identifier (in case of multiple sites with the same title)
-                (
+                'label' => (
                     !empty($siteItem->getConfiguration()['websiteTitle']) ?
                     $siteItem->getConfiguration()['websiteTitle'] . ' - ' :
                     ''
