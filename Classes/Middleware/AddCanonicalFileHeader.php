@@ -17,10 +17,12 @@ declare(strict_types=1);
 
 namespace Supseven\CanonicalFiles\Middleware;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Supseven\CanonicalFiles\Event\BeforeSendingFileResponseEvent;
 use Supseven\CanonicalFiles\Service\CanonicalService;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -45,7 +47,8 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
      */
     public function __construct(
         private ResourceFactory $resourceFactory,
-        private CanonicalService $canonicalService
+        private CanonicalService $canonicalService,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -90,7 +93,10 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
             $response = $this->canonicalService->buildResponseForFile($requestedFile);
 
             // Set the canonised header
-            return $response->withHeader('Link', '<' . $canonisedFileUrl . '>; rel="canonical"');
+            $response = $response->withHeader('Link', '<' . $canonisedFileUrl . '>; rel="canonical"');
+
+            // Dispatch event and send the result
+            return $this->eventDispatcher->dispatch(new BeforeSendingFileResponseEvent($file, $request, $response))->response;
         }
 
         return $handler->handle($request);
