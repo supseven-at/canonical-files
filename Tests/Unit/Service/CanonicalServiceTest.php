@@ -20,18 +20,18 @@ namespace Supseven\CanonicalFiles\Tests\Unit\Service;
 use JetBrains\PhpStorm\NoReturn;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 use Supseven\CanonicalFiles\Service\CanonicalService;
 use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 #[CoversClass(CanonicalService::class)]
-final class CanonicalServiceTest extends UnitTestCase
+final class CanonicalServiceTest extends TestCase
 {
     /**
      * @throws \TYPO3\CMS\Core\Exception|\PHPUnit\Framework\MockObject\Exception
@@ -61,24 +61,13 @@ final class CanonicalServiceTest extends UnitTestCase
         $resourceStorage->expects($this->once())->method('getStorageRecord')->willReturn(['tx_canonical_files_site_identifier' => 'test']);
         $file->expects($this->once())->method('getStorage')->willReturn($resourceStorage);
 
+        $base = new Uri($testDomain);
         $site = $this->createMock(Site::class);
-        $site->expects($this->once())->method('getConfiguration')->willReturn([
-            'baseVariants' => [
-                0 => [
-                    'base'      => $testDomain,
-                    'condition' => 'applicationContext matches "#^' . $context . '#"',
-                ],
-            ],
-        ]);
-        $siteFinder = $this->getMockBuilder(SiteFinder::class)
-                           ->disableOriginalConstructor()
-                           ->getMock();
-        $siteFinder->expects($this->once())->method('getAllSites')->willReturn(['test' => $site]);
+        $site->expects($this->once())->method('getBase')->willReturn($base);
+        $siteFinder = $this->createMock(SiteFinder::class);
+        $siteFinder->expects($this->once())->method('getSiteByIdentifier')->with(self::equalTo('test'))->willReturn($site);
 
-        $expressionLanguageResolver = $this->createMock(Resolver::class);
-        $expressionLanguageResolver->expects($this->once())->method('evaluate')->willReturn(true);
-
-        $canonicalService = new CanonicalService($siteFinder, $expressionLanguageResolver);
+        $canonicalService = new CanonicalService($siteFinder);
         $this->assertSame($testDomain . $filePath, $canonicalService->getFileUri($file));
     }
 }

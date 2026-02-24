@@ -20,6 +20,7 @@ namespace Supseven\CanonicalFiles\Tests\Unit\Middleware;
 use JetBrains\PhpStorm\NoReturn;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -30,12 +31,11 @@ use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 #[CoversClass(AddCanonicalFileHeader::class)]
-final class AddCanonicalFileHeaderTest extends UnitTestCase
+final class AddCanonicalFileHeaderTest extends TestCase
 {
     /**
      * @throws \TYPO3\CMS\Core\Exception|\PHPUnit\Framework\MockObject\Exception
@@ -66,7 +66,7 @@ final class AddCanonicalFileHeaderTest extends UnitTestCase
         $serverRequest->expects($this->once())->method('getUri')->willReturn($uri);
 
         $resourceFactory = $this->createMock(ResourceFactory::class);
-        $fileResource = $this->createMock(FileInterface::class);
+        $fileResource = $this->createStub(File::class);
         $resourceFactory->expects($this->once())->method('retrieveFileOrFolderObject')->with($filePath)->willReturn($fileResource);
 
         $canonicalService = $this->createMock(CanonicalService::class);
@@ -80,7 +80,7 @@ final class AddCanonicalFileHeaderTest extends UnitTestCase
         $eventDispatcher = $this->createMock(EventDispatcher::class);
         $eventDispatcher->expects($this->once())->method('dispatch')->with($this->equalTo($expectedEvent))->willReturn($expectedEvent);
 
-        $requestHandler = $this->createMock(RequestHandlerInterface::class);
+        $requestHandler = $this->createStub(RequestHandlerInterface::class);
 
         $subject = new AddCanonicalFileHeader($resourceFactory, $canonicalService, $eventDispatcher);
         $subject->process($serverRequest, $requestHandler);

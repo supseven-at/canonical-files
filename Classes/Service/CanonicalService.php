@@ -17,9 +17,7 @@ declare(strict_types=1);
 
 namespace Supseven\CanonicalFiles\Service;
 
-use Symfony\Component\ExpressionLanguage\SyntaxError;
 use Symfony\Component\Mime\MimeTypes;
-use TYPO3\CMS\Core\ExpressionLanguage\Resolver;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -40,7 +38,6 @@ class CanonicalService
 
     public function __construct(
         protected readonly SiteFinder $siteFinder,
-        protected readonly Resolver $expressionLanguageResolver
     ) {
     }
 
@@ -62,7 +59,6 @@ class CanonicalService
 
         // If configuration is available and set, create and use the canonical url...
         if (!empty($fileStorage['tx_canonical_files_site_identifier'])) {
-
             return $this->getBaseFromSiteIdentifier($fileStorage['tx_canonical_files_site_identifier']) . $fileUrl;
         }
 
@@ -85,30 +81,14 @@ class CanonicalService
             return self::$baseUriCache[$siteIdentifier];
         }
 
-        $siteConfiguration = $this->siteFinder->getAllSites()[$siteIdentifier]->getConfiguration();
-        $baseFromSiteIdentifier = '';
-
-        if (isset($siteConfiguration['baseVariants'])) {
-            // Iterate over available base variants and evaluate their conditions
-            foreach ($siteConfiguration['baseVariants'] as $baseVariant) {
-                try {
-                    if ($this->expressionLanguageResolver->evaluate($baseVariant['condition'])) {
-                        $baseFromSiteIdentifier = $baseVariant['base'];
-                        break;
-                    }
-                } catch (SyntaxError $e) {
-                    // Ignore not applicable conditions and fail silently
-                }
-            }
-        }
-
-        // Use default base, if no variants match the current environment
-        if ($baseFromSiteIdentifier === '') {
-            $baseFromSiteIdentifier = $siteConfiguration['base'];
-        }
+        $baseFromSiteIdentifier = $this->siteFinder
+            ->getSiteByIdentifier($siteIdentifier)
+            ->getBase()
+            ->withPath('')
+            ->withQuery('');
 
         // Cache and return the result
-        return self::$baseUriCache[$siteIdentifier] = rtrim($baseFromSiteIdentifier, '/');
+        return self::$baseUriCache[$siteIdentifier] = rtrim((string)$baseFromSiteIdentifier, '/');
     }
 
     /**

@@ -1,34 +1,33 @@
 {
-	"name": "supseven/canonical-files",
-	"type": "typo3-cms-extension",
-	"description": "Extension to add canonical url headers to files",
+    "name": "supseven/canonical-files",
+    "type": "typo3-cms-extension",
+    "description": "Extension to add canonical url headers to files",
     "license": "GPL-3.0-only",
     "require": {
-        "php": "^8.2",
-        "typo3/cms-backend": "^12.4",
-        "typo3/cms-core": "^12.4"
+        "php": "^8.5",
+        "typo3/cms-backend": "^14.1",
+        "typo3/cms-core": "^14.1"
     },
-	"extra": {
-		"typo3/cms": {
-			"extension-key": "canonical-files"
-		}
-	},
-	"autoload": {
-		"psr-4": {
-			"Supseven\\CanonicalFiles\\": "Classes"
-		}
-	},
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "canonical_files"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Supseven\\CanonicalFiles\\": "Classes"
+        }
+    },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.14.1",
-        "phpunit/phpunit": "^10.5",
-		"typo3/testing-framework": "^8.0"
+        "phpunit/phpunit": "^12"
     },
-	"config": {
-		"allow-plugins": {
-			"typo3/class-alias-loader": false,
-			"typo3/cms-composer-installers": false
-		}
-	},
+    "config": {
+        "allow-plugins": {
+            "typo3/class-alias-loader": false,
+            "typo3/cms-composer-installers": false
+        }
+    },
     "autoload-dev": {
         "psr-4": {
             "Supseven\\CanonicalFiles\\Tests\\": "Tests/"

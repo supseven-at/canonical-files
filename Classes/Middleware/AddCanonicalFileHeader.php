@@ -42,8 +42,9 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
     /**
      * Inject ResourceFactory
      *
-     * @param \TYPO3\CMS\Core\Resource\ResourceFactory $resourceFactory
-     * @param \Supseven\CanonicalFiles\Service\CanonicalService $canonicalService
+     * @param ResourceFactory $resourceFactory
+     * @param CanonicalService $canonicalService
+     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
         private ResourceFactory $resourceFactory,
@@ -57,8 +58,6 @@ readonly class AddCanonicalFileHeader implements MiddlewareInterface
      *  and add it as a link header to the response.
      *
      * See class description above about which files affected.
-     *
-     * @throws \TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
